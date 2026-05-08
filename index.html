@@ -1,668 +1,665 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>顧客觀感：價值天秤（學生版）</title>
+  <meta charset="utf-8">
+  <title>BAFS 試算表分類遊戲（BS / P&L）</title>
   <style>
-    :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --blue: #2563eb;
-      --green: #16a34a;
-      --orange: #ea580c;
-      --red: #dc2626;
-      --line: #d1d5db;
-      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-    }
-
-    * { box-sizing: border-box; }
-
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
       margin: 0;
-      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
-      background: radial-gradient(circle at top, #eef4ff 0%, var(--bg) 48%, #fdfdfd 100%);
-      color: var(--ink);
+      padding: 0;
+      background: #f5f7fb;
+      color: #222;
     }
-
-    .page {
-      min-height: 100vh;
-      padding: 28px 36px 34px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
     header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 20px;
+      background: #0f3c7d;
+      color: white;
+      padding: 16px 24px;
     }
-
-    .title-block h1 {
-      margin: 0 0 8px;
-      font-size: clamp(28px, 4vw, 46px);
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-    }
-
-    .title-block p {
+    header h1 {
       margin: 0;
-      color: var(--muted);
-      font-size: clamp(15px, 1.5vw, 20px);
+      font-size: 20px;
+    }
+    header p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+    main {
+      padding: 16px 24px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .badge {
-      background: #e0ecff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
-    }
-
-    .main {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 330px;
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    .stage-card, .control-card, .concept-card {
-      background: rgba(255,255,255,0.86);
-      border: 1px solid rgba(209,213,219,0.75);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-    }
-
-    .stage-card {
-      position: relative;
-      min-height: 600px;
-      overflow: hidden;
-      padding: 22px 24px 18px;
-    }
-
-    .scenario {
+    /* 控制區 */
+    .controls {
       display: flex;
-      justify-content: space-between;
-      gap: 18px;
+      flex-wrap: wrap;
       align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .scenario h2 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    .scenario .question {
-      padding: 10px 14px;
-      border-radius: 16px;
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      color: #92400e;
-      font-weight: 700;
-      font-size: 18px;
-      text-align: center;
-    }
-
-    .scale-wrap {
-      position: relative;
-      height: 465px;
-      margin-top: 10px;
-    }
-
-    .fulcrum {
-      position: absolute;
-      left: 50%;
-      bottom: 68px;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 54px solid transparent;
-      border-right: 54px solid transparent;
-      border-bottom: 104px solid #475569;
-      filter: drop-shadow(0 8px 10px rgba(15, 23, 42, 0.16));
-    }
-
-    .beam {
-      position: absolute;
-      left: 50%;
-      bottom: 186px;
-      width: 70%;
-      height: 12px;
-      background: #334155;
-      border-radius: 999px;
-      transform-origin: center;
-      transform: translateX(-50%) rotate(var(--tilt, -8deg));
-      transition: transform 650ms cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 10px 16px rgba(15,23,42,0.18);
-    }
-
-    .pan {
-      position: absolute;
-      width: 290px;
-      min-height: 252px;
-      border-radius: 28px;
-      padding: 18px;
+      gap: 12px 24px;
       background: #fff;
-      border: 3px solid #cbd5e1;
-      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
-      transition: transform 650ms cubic-bezier(.2,.8,.2,1), top 650ms cubic-bezier(.2,.8,.2,1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
     }
-
-    .left-pan { left: 5%; top: var(--leftTop, 155px); }
-    .right-pan { right: 5%; top: var(--rightTop, 82px); }
-
-    .pan h3 {
-      margin: 0 0 12px;
-      font-size: 21px;
+    .controls-section {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .price-tag {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-      border-radius: 18px;
-      padding: 16px;
-      text-align: center;
-      font-weight: 900;
-      font-size: 34px;
-      margin-bottom: 12px;
-    }
-
-    .chips {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-
-    .chip {
-      border-radius: 14px;
-      padding: 9px 11px;
-      font-weight: 700;
-      font-size: 16px;
-      opacity: 0;
-      transform: translateY(8px) scale(0.98);
-      transition: opacity 350ms ease, transform 350ms ease;
-      display: none;
-    }
-
-    .chip.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      display: block;
-    }
-
-    .benefit { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .negative { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
-
-    .status {
-      position: absolute;
-      left: 50%;
-      top: 14px;
-      transform: translateX(-50%);
-      text-align: center;
-      background: #ffffff;
-      border: 1px solid #dbeafe;
-      border-radius: 22px;
-      padding: 14px 22px;
-      box-shadow: 0 12px 28px rgba(37,99,235,0.10);
-      min-width: 400px;
-      max-width: 65%;
-    }
-
-    .status .label {
-      color: var(--muted);
       font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
+    }
+    .controls label {
+      cursor: pointer;
+    }
+    button {
+      border: none;
+      background: #0f75bd;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0c5f98;
+    }
+    button:disabled {
+      background: #9fb8cf;
+      cursor: not-allowed;
+    }
+    select, input[type="number"] {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      width: 60px;
     }
 
-    .status .text {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--blue);
+    /* 狀態列 */
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .status-item {
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .status-label {
+      font-weight: 600;
+      margin-right: 4px;
     }
 
-    .class-prompt {
-      position: absolute;
-      left: 24px;
-      right: 24px;
-      bottom: 18px;
-      border-radius: 20px;
-      padding: 15px 18px;
-      background: #f8fafc;
-      border: 1px dashed #94a3b8;
+    /* 佈局 */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    /* 左側：項目區 / 單題區 */
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      min-height: 220px;
+    }
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .panel small {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .items-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      min-height: 160px;
+    }
+
+    .item-card {
+      background: #e4f1ff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: grab;
+      user-select: none;
+      border: 1px solid #b8d7ff;
+      white-space: nowrap;
+    }
+    .item-card.dragging {
+      opacity: 0.6;
+    }
+    .item-card.correct {
+      background: #d6f8d6;
+      border-color: #87cf87;
+    }
+    .item-card.wrong {
+      background: #ffe0e0;
+      border-color: #ff9b9b;
+    }
+
+    /* 單題模式顯示區 */
+    #single-item-box {
+      display: none;
+      margin-top: 6px;
+      min-height: 80px;
+    }
+    #current-item-wrapper {
+      padding: 10px;
+      border-radius: 10px;
+      background: #f0f4ff;
+      border: 1px dashed #9db5ff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .class-prompt strong { font-size: 20px; }
-    .class-prompt span { color: var(--muted); font-size: 17px; }
-
-    .control-card {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .step-title {
-      font-size: 22px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .student-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .student-label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 800;
-      margin-bottom: 8px;
-      letter-spacing: .02em;
-    }
-
-    .student-task {
-      color: #374151;
-      font-size: 16px;
-      line-height: 1.55;
-      margin: 0;
+      justify-content: center;
       min-height: 72px;
     }
+    #countdown {
+      font-size: 13px;
+      margin-top: 4px;
+      color: #b30000;
+    }
 
-    .buttons {
+    /* 右側：三大分類區 */
+    .dropzones {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
     }
-
-    button {
-      border: 0;
-      border-radius: 15px;
-      padding: 12px 14px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
-    }
-
-    button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15,23,42,0.12); }
-    button:active { transform: translateY(0); }
-    .primary { background: #2563eb; color: white; }
-    .secondary { background: #e5e7eb; color: #111827; }
-
-    .steps {
+    .dropzone {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      min-height: 150px;
       display: flex;
       flex-direction: column;
-      gap: 9px;
-      margin-top: 4px;
-      max-height: 370px;
-      overflow: auto;
-      padding-right: 4px;
     }
-
-    .step-dot {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 10px;
-      border-radius: 14px;
-      background: #f8fafc;
-      color: var(--muted);
-      font-weight: 700;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-
-    .step-dot.active {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-color: #bfdbfe;
-    }
-
-    .num {
-      width: 26px;
-      height: 26px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: #e5e7eb;
-      color: #374151;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .active .num { background: #2563eb; color: white; }
-
-    .concept-card {
-      padding: 18px 22px;
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .concept-card p {
-      margin: 0;
-      line-height: 1.65;
-      font-size: 22px;
-      color: #374151;
+    .dropzone-header {
       font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .dropzone-sub {
+      font-size: 11px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    .dropzone-body {
+      flex: 1;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px dashed #ccd5e0;
+      min-height: 80px;
+    }
+    .dropzone.highlight {
+      outline: 2px solid #0f75bd;
+      outline-offset: 2px;
     }
 
-    .keyword-box {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+    .message {
+      margin-top: 8px;
+      font-size: 13px;
+      min-height: 18px;
+    }
+    .message.success {
+      color: #1b7a1b;
+    }
+    .message.error {
+      color: #b30000;
     }
 
-    .keyword {
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: #f1f5f9;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .keyword.green { background: #dcfce7; color: #166534; }
-    .keyword.orange { background: #ffedd5; color: #9a3412; }
-    .keyword.blue { background: #dbeafe; color: #1e40af; }
-
-    @media (max-width: 1080px) {
-      .main { grid-template-columns: 1fr; }
-      .control-card { order: -1; }
-      .concept-card { grid-template-columns: 1fr; }
-      .status { max-width: 84%; }
-    }
-
-    @media (max-width: 760px) {
-      .page { padding: 16px; }
-      .stage-card { min-height: 760px; }
-      .pan {
-        width: 92%;
-        left: 4% !important;
-        right: auto !important;
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
       }
-      .left-pan { top: 118px !important; }
-      .right-pan { top: 408px !important; }
-      .beam, .fulcrum { display: none; }
-      .status { min-width: unset; max-width: 100%; }
-      .scenario { flex-direction: column; align-items: flex-start; }
-      .class-prompt { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <div class="title-block">
-        <h1>顧客觀感：價值天秤</h1>
-        <p>學生用「值唔值」判斷價格，理解顧客觀感如何影響定價。</p>
+<header>
+  <h1>BAFS 試算表分類遊戲：BS / P&amp;L</h1>
+  <p>拖拉項目到正確類別：BS｜資產、BS｜負債／資本、P&amp;L｜收入／費用。可選擇「全部顯示」或「逐項閃現」模式。</p>
+</header>
+
+<main>
+  <!-- 控制區 -->
+  <div class="controls">
+    <div class="controls-section">
+      <span class="status-label">模式：</span>
+      <label><input type="radio" name="mode" value="all" checked> 模式 1：全部顯示</label>
+      <label><input type="radio" name="mode" value="single"> 模式 2：逐項閃現</label>
+    </div>
+
+    <div class="controls-section">
+      <span class="status-label">單項顯示時間（秒）：</span>
+      <input type="number" id="timeLimit" min="1" max="5" value="3">
+      <small>（只適用於模式 2）</small>
+    </div>
+
+    <div class="controls-section">
+      <button id="startBtn">開始遊戲</button>
+      <button id="resetBtn" disabled>重設</button>
+    </div>
+  </div>
+
+  <!-- 狀態列 -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="status-label">已分類：</span>
+      <span id="placedCount">0</span> / <span id="totalCount">0</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">正確：</span>
+      <span id="correctCount">0</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">用時：</span>
+      <span id="elapsedTime">0.0</span> 秒
+    </div>
+  </div>
+
+  <!-- 主要佈局 -->
+  <div class="layout">
+
+    <!-- 左側：項目區／單題區 -->
+    <section class="panel">
+      <h2>項目區</h2>
+      <small>模式 1：顯示全部項目；模式 2：每次只顯示一項，限時拖入正確分類。</small>
+
+      <!-- 模式 1：全部項目 -->
+      <div id="all-items-box" class="items-container"></div>
+
+      <!-- 模式 2：單一項目 -->
+      <div id="single-item-box">
+        <div id="current-item-wrapper">
+          <!-- 單題卡片將插入此處 -->
+        </div>
+        <div id="countdown"></div>
       </div>
-      <div class="badge">BAFS 定價因素｜外在因素</div>
-    </header>
 
-    <section class="main">
-      <div class="stage-card" id="stage">
-        <div class="scenario">
-          <h2>港灣探索樂園成人門票</h2>
-          <div class="question" id="questionText">現在你覺得 HK$560 值唔值？</div>
-        </div>
-
-        <div class="scale-wrap">
-          <div class="status">
-            <div class="label">顧客心中的判斷</div>
-            <div class="text" id="statusText">價格很重，好處未知</div>
-          </div>
-
-          <div class="pan left-pan">
-            <h3>💰 顧客付出的代價</h3>
-            <div class="price-tag">HK$560</div>
-            <div class="chips">
-              <div class="chip negative" data-chip="queue">排隊時間長</div>
-              <div class="chip negative" data-chip="old">部分設施老舊</div>
-              <div class="chip negative" data-chip="food">園內餐飲價格高</div>
-              <div class="chip negative" data-chip="limit">VR體驗名額有限</div>
-            </div>
-          </div>
-
-          <div class="beam"></div>
-          <div class="fulcrum"></div>
-
-          <div class="pan right-pan">
-            <h3>✨ 顧客感受到的好處</h3>
-            <div class="chips">
-              <div class="chip benefit" data-chip="vr">新VR海底探險體驗區</div>
-              <div class="chip benefit" data-chip="show">夜間水幕表演</div>
-              <div class="chip benefit" data-chip="cinema">海洋主題沉浸式影院</div>
-              <div class="chip benefit" data-chip="fast">免費快速通行證</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="class-prompt">
-          <strong>思考問題</strong>
-          <span id="promptText">如果你只知道門票是 HK$560，你會覺得值得嗎？</span>
-        </div>
-      </div>
-
-      <aside class="control-card">
-        <h2 class="step-title" id="stepTitle">Step 1｜只知道價格</h2>
-        <div class="student-box">
-          <div class="student-label">學生任務</div>
-          <p class="student-task" id="studentTask">先只看價格，判斷 HK$560 對你來說是否值得。</p>
-        </div>
-        <div class="buttons">
-          <button class="secondary" onclick="prevStep()">上一頁</button>
-          <button class="primary" onclick="nextStep()">下一頁</button>
-        </div>
-        <button class="secondary" onclick="resetDemo()">重置示範</button>
-        <div class="steps" id="steps"></div>
-      </aside>
+      <div id="leftMessage" class="message"></div>
     </section>
 
-    <section class="concept-card">
-      <div>
-        <p>價格反映顧客願意付出多少代價，去換取產品帶來的好處。若顧客認為產品價值高，企業較能收取較高價格；若顧客認為產品價值低，顧客會較價格敏感。</p>
+    <!-- 右側：三大分類區 -->
+    <section class="dropzones">
+      <div class="dropzone" data-category="asset">
+        <div class="dropzone-header">BS｜資產</div>
+        <div class="dropzone-sub">例如：現金、應收賬款、存貨、設備等</div>
+        <div class="dropzone-body"></div>
       </div>
-      <div class="keyword-box">
-        <div class="keyword blue">顧客觀感</div>
-        <div class="keyword blue">顧客認知價值</div>
-        <div class="keyword green">產品帶來的好處</div>
-        <div class="keyword orange">願意付出的代價</div>
-        <div class="keyword green">價值高 → 可收較高價格</div>
-        <div class="keyword orange">價值低 → 價格較敏感</div>
+
+      <div class="dropzone" data-category="liabilityCap">
+        <div class="dropzone-header">BS｜負債／資本</div>
+        <div class="dropzone-sub">例如：應付賬款、銀行透支、長期借貸、業主資本等</div>
+        <div class="dropzone-body"></div>
+      </div>
+
+      <div class="dropzone" data-category="pl">
+        <div class="dropzone-header">P&amp;L｜收入／費用</div>
+        <div class="dropzone-sub">例如：銷貨、購貨、工資、租金、廣告費用、利息等</div>
+        <div class="dropzone-body"></div>
       </div>
     </section>
   </div>
 
-  <script>
-    const steps = [
-      {
-        title: "Step 1｜只知道價格",
-        task: "先只看價格，判斷 HK$560 對你來說是否值得。",
-        status: "價格很重，好處未知",
-        question: "現在你覺得 HK$560 值唔值？",
-        prompt: "如果你只知道門票是 HK$560，你會覺得值得嗎？",
-        tilt: -10,
-        leftTop: 168,
-        rightTop: 86,
-        show: []
-      },
-      {
-        title: "Step 2｜加入好處：VR體驗",
-        task: "加入第一個好處後，再判斷一次：HK$560 是否比剛才更值得？",
-        status: "第一個好處出現，價格開始變得較合理",
-        question: "加上 VR 體驗後，HK$560 是否更值得？",
-        prompt: "新VR海底探險體驗區，會不會令你更願意接受 HK$560？",
-        tilt: -6,
-        leftTop: 152,
-        rightTop: 102,
-        show: ["vr"]
-      },
-      {
-        title: "Step 3｜加入好處：水幕表演",
-        task: "再加入一個好處，看看天秤是否更接近平衡。",
-        status: "好處增加，顧客接受程度提高",
-        question: "再加上水幕表演後，HK$560 是否更值得？",
-        prompt: "夜間水幕表演，會不會進一步提升你的價值感？",
-        tilt: -3,
-        leftTop: 142,
-        rightTop: 116,
-        show: ["vr", "show"]
-      },
-      {
-        title: "Step 4｜加入好處：沉浸式影院",
-        task: "再觀察一次：好處增加後，你對價格的看法有沒有改變？",
-        status: "好處愈來愈多，天秤逐漸平衡",
-        question: "加上沉浸式影院後，HK$560 是否更合理？",
-        prompt: "海洋主題沉浸式影院，會不會令你覺得更值？",
-        tilt: -1,
-        leftTop: 134,
-        rightTop: 126,
-        show: ["vr", "show", "cinema"]
-      },
-      {
-        title: "Step 5｜加入好處：快速通行證",
-        task: "現在四個好處都出現了，再作最後一次正面判斷。",
-        status: "好處足夠，顧客較願意接受高價",
-        question: "現在 HK$560 是否值得？",
-        prompt: "免費快速通行證，能否令你更容易接受 HK$560？",
-        tilt: 3,
-        leftTop: 118,
-        rightTop: 146,
-        show: ["vr", "show", "cinema", "fast"]
-      },
-      {
-        title: "Step 6｜加入負面因素：排隊長",
-        task: "現在開始加入負面因素，看看你對價格的接受程度會否下降。",
-        status: "第一個負面因素出現，價格敏感度提高",
-        question: "如果排隊時間長，HK$560 還是否值得？",
-        prompt: "排隊時間長，會不會令你覺得 HK$560 沒那麼值？",
-        tilt: 0,
-        leftTop: 132,
-        rightTop: 132,
-        show: ["vr", "show", "cinema", "fast", "queue"]
-      },
-      {
-        title: "Step 7｜加入負面因素：設施老舊",
-        task: "再加入一個負面因素，重新判斷價值天秤的變化。",
-        status: "負面觀感增加，顧客開始變得更敏感",
-        question: "如果部分設施老舊，HK$560 還合理嗎？",
-        prompt: "部分設施老舊，會不會令你進一步覺得不值？",
-        tilt: -3,
-        leftTop: 146,
-        rightTop: 120,
-        show: ["vr", "show", "cinema", "fast", "queue", "old"]
-      },
-      {
-        title: "Step 8｜加入負面因素：餐飲貴",
-        task: "再看一次：額外付出愈多，你會否更在意價格？",
-        status: "顧客需要付出的代價增加",
-        question: "如果園內餐飲也很貴，HK$560 還值得嗎？",
-        prompt: "園內餐飲價格高，會否令你更不願意付 HK$560？",
-        tilt: -6,
-        leftTop: 158,
-        rightTop: 104,
-        show: ["vr", "show", "cinema", "fast", "queue", "old", "food"]
-      },
-      {
-        title: "Step 9｜加入負面因素：名額有限",
-        task: "最後加入一個負面因素，看看天秤會否再次明顯傾斜。",
-        status: "負面觀感進一步增加，顧客較價格敏感",
-        question: "如果 VR 名額有限，HK$560 還值得嗎？",
-        prompt: "VR體驗名額有限，會不會令你覺得價值再下降？",
-        tilt: -9,
-        leftTop: 170,
-        rightTop: 88,
-        show: ["vr", "show", "cinema", "fast", "queue", "old", "food", "limit"]
-      },
-      {
-        title: "Step 10｜概念命名",
-        task: "總結：你剛才其實在衡量甚麼？請說出這個定價因素。",
-        status: "這就是：顧客觀感",
-        question: "這反映企業定價時要考慮甚麼？",
-        prompt: "請用文獻A語言總結：顧客認為價值高或低，會怎樣影響企業定價？",
-        tilt: -2,
-        leftTop: 138,
-        rightTop: 120,
-        show: ["vr", "show", "cinema", "fast", "queue", "old", "food", "limit"]
+  <div id="globalMessage" class="message"></div>
+</main>
+
+<script>
+  // === 遊戲數據：20 個項目 ===
+  const allItemsData = [
+    { id: 1, name: '現金', category: 'asset' },
+    { id: 2, name: '應收賬款', category: 'asset' },
+    { id: 3, name: '存貨（期末）', category: 'asset' },
+    { id: 4, name: '辦公室設備', category: 'asset' },
+    { id: 5, name: '銀行存款', category: 'asset' },
+    { id: 6, name: '應付賬款', category: 'liabilityCap' },
+    { id: 7, name: '銀行透支', category: 'liabilityCap' },
+    { id: 8, name: '長期借貸（五年）', category: 'liabilityCap' },
+    { id: 9, name: '業主資本', category: 'liabilityCap' },
+    { id:10, name: '額外投入資本', category: 'liabilityCap' },
+    { id:11, name: '銷貨', category: 'pl' },
+    { id:12, name: '銷貨退回', category: 'pl' },
+    { id:13, name: '購貨', category: 'pl' },
+    { id:14, name: '購貨退回', category: 'pl' },
+    { id:15, name: '工資費用', category: 'pl' },
+    { id:16, name: '租金費用', category: 'pl' },
+    { id:17, name: '保險費', category: 'pl' },
+    { id:18, name: '廣告費用', category: 'pl' },
+    { id:19, name: '折舊費用', category: 'pl' },
+    { id:20, name: '佣金收入', category: 'pl' }
+  ];
+
+  // === 狀態 ===
+  let mode = 'all';          // 'all' or 'single'
+  let gameRunning = false;
+  let startTime = null;
+  let timerInterval = null;
+
+  let remainingItems = [];   // 用於模式 2
+  let currentItem = null;
+  let itemTimer = null;
+  let itemTimeLimit = 3;     // 秒
+
+  let placedCount = 0;
+  let correctCount = 0;
+
+  // === DOM 引用 ===
+  const modeRadios = document.querySelectorAll('input[name="mode"]');
+  const timeLimitInput = document.getElementById('timeLimit');
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const allItemsBox = document.getElementById('all-items-box');
+  const singleItemBox = document.getElementById('single-item-box');
+  const currentItemWrapper = document.getElementById('current-item-wrapper');
+  const countdownEl = document.getElementById('countdown');
+  const leftMessage = document.getElementById('leftMessage');
+  const globalMessage = document.getElementById('globalMessage');
+  const dropzones = document.querySelectorAll('.dropzone');
+
+  const placedCountEl = document.getElementById('placedCount');
+  const totalCountEl = document.getElementById('totalCount');
+  const correctCountEl = document.getElementById('correctCount');
+  const elapsedTimeEl = document.getElementById('elapsedTime');
+
+  // === 初始化 ===
+  totalCountEl.textContent = allItemsData.length;
+
+  modeRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      mode = r.value;
+      updateModeView();
+    });
+  });
+
+  timeLimitInput.addEventListener('change', () => {
+    let v = parseInt(timeLimitInput.value, 10);
+    if (isNaN(v) || v < 1) v = 1;
+    if (v > 5) v = 5;
+    timeLimitInput.value = v;
+    itemTimeLimit = v;
+  });
+
+  startBtn.addEventListener('click', startGame);
+  resetBtn.addEventListener('click', resetGame);
+
+  // === 功能函數 ===
+  function updateModeView() {
+    if (mode === 'all') {
+      allItemsBox.style.display = 'flex';
+      singleItemBox.style.display = 'none';
+      countdownEl.textContent = '';
+    } else {
+      allItemsBox.style.display = 'none';
+      singleItemBox.style.display = 'block';
+    }
+  }
+
+  function startGame() {
+    resetGame(true); // 軟重設，只清空，不重置模式選項
+    gameRunning = true;
+    startTime = Date.now();
+    startBtn.disabled = true;
+    resetBtn.disabled = false;
+    globalMessage.textContent = '';
+    leftMessage.textContent = '';
+
+    if (mode === 'all') {
+      // 模式一：一次顯示全部
+      renderAllItems();
+    } else {
+      // 模式二：逐項閃現
+      remainingItems = shuffle(allItemsData.slice());
+      showNextSingleItem();
+    }
+    startElapsedTimer();
+  }
+
+  function resetGame(soft = false) {
+    // 結束所有計時
+    stopElapsedTimer();
+    clearTimeout(itemTimer);
+    itemTimer = null;
+
+    gameRunning = false;
+    startTime = null;
+    placedCount = 0;
+    correctCount = 0;
+    placedCountEl.textContent = '0';
+    correctCountEl.textContent = '0';
+    elapsedTimeEl.textContent = '0.0';
+    countdownEl.textContent = '';
+    currentItem = null;
+    remainingItems = [];
+
+    // 清空區域
+    allItemsBox.innerHTML = '';
+    currentItemWrapper.innerHTML = '';
+    document.querySelectorAll('.dropzone-body').forEach(db => db.innerHTML = '');
+    leftMessage.textContent = '';
+    leftMessage.className = 'message';
+    globalMessage.textContent = '';
+    globalMessage.className = 'message';
+
+    // 按鈕狀態
+    if (!soft) {
+      startBtn.disabled = false;
+      resetBtn.disabled = true;
+    }
+  }
+
+  function startElapsedTimer() {
+    stopElapsedTimer();
+    timerInterval = setInterval(() => {
+      if (!startTime) return;
+      const elapsed = (Date.now() - startTime) / 1000;
+      elapsedTimeEl.textContent = elapsed.toFixed(1);
+    }, 100);
+  }
+
+  function stopElapsedTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  // === 模式 1：全部顯示 ===
+  function renderAllItems() {
+    allItemsBox.innerHTML = '';
+    allItemsData.forEach(item => {
+      const card = createDraggableCard(item);
+      allItemsBox.appendChild(card);
+    });
+  }
+
+  // === 模式 2：逐項閃現 ===
+  function showNextSingleItem() {
+    clearTimeout(itemTimer);
+    countdownEl.textContent = '';
+
+    if (remainingItems.length === 0) {
+      finishGame();
+      return;
+    }
+
+    currentItem = remainingItems.shift();
+    currentItemWrapper.innerHTML = '';
+    const card = createDraggableCard(currentItem);
+    currentItemWrapper.appendChild(card);
+
+    // 啟動倒數
+    let remaining = itemTimeLimit;
+    updateCountdownText(remaining);
+    itemTimer = setInterval(() => {
+      remaining -= 0.1;
+      if (remaining <= 0) {
+        clearInterval(itemTimer);
+        itemTimer = null;
+        // 超時，該項目視為錯失，直接換下一題
+        leftMessage.textContent = `「${currentItem.name}」已超時，轉下一項。`;
+        leftMessage.className = 'message error';
+        placedCount++; // 也算一項已處理（但不計正確）
+        placedCountEl.textContent = placedCount;
+        currentItemWrapper.innerHTML = '';
+        currentItem = null;
+        if (placedCount >= allItemsData.length) {
+          finishGame();
+        } else {
+          showNextSingleItem();
+        }
+      } else {
+        updateCountdownText(remaining);
       }
-    ];
+    }, 100);
+  }
 
-    let current = 0;
+  function updateCountdownText(sec) {
+    countdownEl.textContent = `剩餘時間：${sec.toFixed(1)} 秒`;
+  }
 
-    function renderStepDots() {
-      const box = document.getElementById("steps");
-      box.innerHTML = "";
-      steps.forEach((s, i) => {
-        const div = document.createElement("div");
-        div.className = "step-dot" + (i === current ? " active" : "");
-        div.innerHTML = `<span class="num">${i + 1}</span><span>${s.title.replace("｜", "：")}</span>`;
-        div.onclick = () => { current = i; render(); };
-        box.appendChild(div);
-      });
-    }
+  // === 生成可拖拉卡片 ===
+  function createDraggableCard(item) {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.textContent = item.name;
+    card.draggable = true;
+    card.dataset.id = item.id;
+    card.dataset.category = item.category;
 
-    function render() {
-      const s = steps[current];
-      document.getElementById("stepTitle").textContent = s.title;
-      document.getElementById("studentTask").textContent = s.task;
-      document.getElementById("statusText").textContent = s.status;
-      document.getElementById("questionText").textContent = s.question;
-      document.getElementById("promptText").textContent = s.prompt;
-
-      const stage = document.getElementById("stage");
-      stage.style.setProperty("--tilt", `${s.tilt}deg`);
-      stage.style.setProperty("--leftTop", `${s.leftTop}px`);
-      stage.style.setProperty("--rightTop", `${s.rightTop}px`);
-
-      document.querySelectorAll(".chip").forEach(chip => {
-        const key = chip.getAttribute("data-chip");
-        chip.classList.toggle("show", s.show.includes(key));
-      });
-
-      renderStepDots();
-    }
-
-    function nextStep() {
-      current = Math.min(current + 1, steps.length - 1);
-      render();
-    }
-
-    function prevStep() {
-      current = Math.max(current - 1, 0);
-      render();
-    }
-
-    function resetDemo() {
-      current = 0;
-      render();
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight" || e.key === " ") nextStep();
-      if (e.key === "ArrowLeft") prevStep();
+    card.addEventListener('dragstart', (e) => {
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', JSON.stringify({
+        id: item.id,
+        name: item.name,
+        category: item.category
+      }));
     });
 
-    render();
-  </script>
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+    });
+
+    return card;
+  }
+
+  // === Dropzone 事件 ===
+  dropzones.forEach(zone => {
+    const body = zone.querySelector('.dropzone-body');
+
+    body.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('highlight');
+    });
+
+    body.addEventListener('dragleave', () => {
+      zone.classList.remove('highlight');
+    });
+
+    body.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('highlight');
+      const dataText = e.dataTransfer.getData('text/plain');
+      if (!dataText) return;
+      const data = JSON.parse(dataText);
+      handleDropItem(data, zone, body);
+    });
+  });
+
+  function handleDropItem(data, zone, body) {
+    if (!gameRunning) return;
+
+    const correctCategory = data.category;
+    const targetCategory = zone.dataset.category;
+
+    // 找到畫面上的對應卡片（可能在左側，也可能在單題區）
+    const card = document.querySelector(
+      `.item-card[data-id="${data.id}"]`
+    );
+    if (!card) return;
+
+    if (correctCategory === targetCategory) {
+      // 正確
+      card.classList.remove('wrong');
+      card.classList.add('correct');
+      // 將卡片放入對應區塊
+      body.appendChild(card);
+
+      leftMessage.textContent = `✅ 正確！「${data.name}」已歸類為 ${zone.querySelector('.dropzone-header').textContent}`;
+      leftMessage.className = 'message success';
+
+      correctCount++;
+      placedCount++;
+      correctCountEl.textContent = correctCount;
+      placedCountEl.textContent = placedCount;
+
+      if (mode === 'single') {
+        // 單題模式：立即停止此題的倒數並進入下一題
+        clearInterval(itemTimer);
+        itemTimer = null;
+        currentItem = null;
+        currentItemWrapper.innerHTML = '';
+        countdownEl.textContent = '';
+        if (placedCount >= allItemsData.length) {
+          finishGame();
+        } else {
+          showNextSingleItem();
+        }
+      } else {
+        // 全部顯示模式：檢查是否完成全部
+        if (placedCount >= allItemsData.length) {
+          finishGame();
+        }
+      }
+    } else {
+      // 錯誤，提示但不結束
+      card.classList.add('wrong');
+      leftMessage.textContent = `❌ 類別不正確，請再試一次。`;
+      leftMessage.className = 'message error';
+    }
+  }
+
+  // === 結束遊戲 ===
+  function finishGame() {
+    gameRunning = false;
+    stopElapsedTimer();
+    startBtn.disabled = false;
+    resetBtn.disabled = false;
+    clearInterval(itemTimer);
+    itemTimer = null;
+    countdownEl.textContent = '';
+
+    const elapsed = startTime ? ((Date.now() - startTime) / 1000).toFixed(1) : '0.0';
+    elapsedTimeEl.textContent = elapsed;
+    globalMessage.textContent = `🎉 已處理所有項目！總用時：${elapsed} 秒，正確：${correctCount} / ${allItemsData.length}`;
+    globalMessage.className = 'message success';
+  }
+
+  // === 工具：洗牌 ===
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // 初始畫面
+  updateModeView();
+</script>
 </body>
 </html>
